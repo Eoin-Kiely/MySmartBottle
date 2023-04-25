@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import "./App.css";
+import "./bootstrap/dist/css/bootstrap.min.css";
+
+import Header from "./Components/header";
+import Home from "./Pages/Home";
+import LoginPage from "./Pages/LoginPage";
+import "./Services/firebase";
+import ProtectedRoute from "./Services/protectedroute";
+import RegisterPage from "./Pages/RegisterPage";
+import StatusPage from "./Pages/StatusPage";
+import WaterFormPage from "./Pages/WaterFormPage";
 
 function App() {
+  let [loggedIn, setLoggedIn] = useState(
+    sessionStorage.getItem("loggedInUser") ? true : false
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Header login={loggedIn} setLogin={setLoggedIn} />
+      <Routes>
+        <Route path="/" exact element={<Home login={loggedIn} />} />
+        <Route path="/login" element={<LoginPage setLogin={setLoggedIn} />} />
+        <Route
+          path="/register"
+          element={<RegisterPage setLogin={setLoggedIn} />}
+        />
+        <Route
+          path="/status"
+          element={<ProtectedRoute loggedIn={loggedIn}><StatusPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/waterIntakeForm"
+          element={<ProtectedRoute loggedIn={loggedIn}><WaterFormPage  /></ProtectedRoute>}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
